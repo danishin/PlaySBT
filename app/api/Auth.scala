@@ -13,11 +13,11 @@ class Auth extends Controller {
   def index = Action.async { request =>
 //    val d: List[Future] = List(Future(1), Future(2))
 
-    List(Future(1), Future(2), Future(3))
+    List(Future.successful(1), Future.successful(2), Future.successful(3))
 
     Ok(Json.arr(1,2))
 
-    Future(Forbidden)
+    Future.successful(Forbidden)
   }
 }
 
@@ -44,7 +44,7 @@ object Authenticated extends ActionBuilder[AuthenticatedRequest] {
     checkHTTPS(request)
       .flatMap(authenticate)
       .map(block)
-      .fold(Future.successful, { _ })
+      .fold(Future.successful, { a => a })
   }
 
   private def log[A](request: Request[A]): Unit = {

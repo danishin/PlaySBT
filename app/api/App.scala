@@ -4,6 +4,7 @@ import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.mvc.Results._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 

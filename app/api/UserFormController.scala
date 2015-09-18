@@ -4,6 +4,7 @@ import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.Json
 import play.api.mvc._
 
 object Persistence {
@@ -14,6 +15,8 @@ case class UserData(name: String, email: Option[String], age: Int, date: DateTim
   def id = 1
   def dateString = date.toString
 }
+
+case class SimpleData(name: String, age: Int)
 
 class UserFormController extends Controller {
   val userForm = Form(
@@ -29,6 +32,12 @@ class UserFormController extends Controller {
       case "admin" if ud.email.isDefined => true
       case _ => false
     }}))
+
+  val simpleForm = Form(
+    mapping(
+      "name" -> text,
+      "age" -> number
+    )(SimpleData.apply)(SimpleData.unapply))
 
   val tupleForm = Form(tuple("name" -> text, "age" -> number))
   val singleForm = Form(single("email" -> email))
@@ -63,18 +72,20 @@ class UserFormController extends Controller {
 //
 //  }
 
-  def post = Action/*(parse.form(userForm, onErrors = (userForm: Form[UserData]) => BadRequest(userForm)))*/ { implicit request =>
+  def post = Action(parse.form(simpleForm, onErrors = (form: Form[SimpleData]) => BadRequest("NOOOO"))) { implicit request =>
 //    val userData = userForm.bindFromRequest.fold({ BadRequest(_) }, { Ok(_) })
 
-    val d = userForm.bind(request.body.asJson.get)
+    val simpleData = request.body
+
+    println(s"BODY: $simpleData")
+
+//    val d = userForm.bind(request.body.asJson.get)
 
 //    val userData = request.body
 //    Persistence.save(userData)
 
-    Ok()
+    Ok(Json.arr(simpleData.name, simpleData.age))
   }
-
-
 }
 
 /* Forms
