@@ -1,0 +1,3 @@
+GET         /                   api.App.index(name: String, num: Int)
+POST        /                   api.App.post()
+GET         /compose            api.App.compose(name: String)
